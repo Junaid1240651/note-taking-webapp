@@ -16,6 +16,8 @@ const Note_taking_page = () => {
   const [text2, setText2] = useState("");
   const [output, setOutput] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [groupName, setgroupName] = useState();
+  const [editIndex, seteditIndex] = useState(-1);
 
   var color = [
     {
@@ -51,15 +53,22 @@ const Note_taking_page = () => {
     setpopUP(false);
   }
   function createGroupHandler() {
-    if (groupData === null) {
-      const newgroupData = [{ inputValue, selectedColor }];
-      localStorage.setItem("title", JSON.stringify(newgroupData));
-      setgroupData(newgroupData);
+    if (inputValue == "") {
+      alert("Please Write Group Name");
     } else {
-      const newgroupData = [...groupData, { inputValue, selectedColor }];
-      localStorage.setItem("title", JSON.stringify(newgroupData));
+      if (groupName == undefined) {
+        setgroupName(inputValue);
+      }
+      if (groupData === null) {
+        const newgroupData = [{ inputValue, selectedColor }];
+        localStorage.setItem("title", JSON.stringify(newgroupData));
+        setgroupData(newgroupData);
+      } else {
+        const newgroupData = [...groupData, { inputValue, selectedColor }];
+        localStorage.setItem("title", JSON.stringify(newgroupData));
 
-      setgroupData(newgroupData);
+        setgroupData(newgroupData);
+      }
     }
 
     setInputValue("");
@@ -67,28 +76,39 @@ const Note_taking_page = () => {
     setpopUP(false);
   }
 
-  function chooseColorHandler(e) {
-    setSelectedColor(e.target.name);
-  }
-
-  function viewNotesHandler(event, index) {
-    console.log(index);
-    setActiveIndex(index);
-  }
   const sendMsgHandler = async () => {
     const currentDate = new Date().toLocaleString();
     if (output === null) {
-      const newMessage = [{ indexx: activeIndex, text2, date: currentDate }];
+      const newMessage = [
+        { indexx: activeIndex, groupName: groupName, text2, date: currentDate },
+      ];
       localStorage.setItem("messages", JSON.stringify(newMessage));
       setOutput(newMessage);
     } else {
-      const newMessage = [
-        ...output,
-        { indexx: activeIndex, text2, date: currentDate },
-      ];
-      localStorage.setItem("messages", JSON.stringify(newMessage));
+      if (editIndex >= 0) {
+        const newState = output.map((obj, index) => {
+          if (index === editIndex) {
+            return { ...obj, text2: text2 };
+          }
+          return obj;
+        });
+        localStorage.setItem("messages", JSON.stringify(newState));
+        setOutput(newState);
+        seteditIndex(-1);
+      } else {
+        const newMessage = [
+          ...output,
+          {
+            indexx: activeIndex,
+            groupName: groupName,
+            text2,
+            date: currentDate,
+          },
+        ];
+        localStorage.setItem("messages", JSON.stringify(newMessage));
 
-      setOutput(newMessage);
+        setOutput(newMessage);
+      }
     }
     setText2("");
   };
@@ -98,8 +118,52 @@ const Note_taking_page = () => {
     const savedtitle = JSON.parse(localStorage.getItem("title"));
     setgroupData(savedtitle);
     setOutput(savedMessages);
-    console.log(savedMessages);
   }, []);
+
+  function notesDelete(index) {
+    if (index === index) {
+      setOutput(output.filter((i, inde) => inde !== index));
+      localStorage.setItem(
+        "messages",
+        JSON.stringify(output.filter((i, inde) => inde !== index))
+      );
+    }
+    setText2("");
+  }
+
+  function notesEdit(index) {
+    seteditIndex(index);
+    if (index === index) {
+      output.filter((i, inde) => (inde == index ? setText2(i.text2) : ""));
+    }
+  }
+
+  function deleteGroup(e, groupname) {
+    setgroupData(groupData.filter((i, inde) => inde !== e));
+    localStorage.setItem(
+      "title",
+      JSON.stringify(groupData.filter((i, inde) => inde !== e))
+    );
+    setOutput(output.filter((i) => i.groupName !== groupname));
+
+    localStorage.setItem(
+      "messages",
+      JSON.stringify(output.filter((i) => i.groupName !== groupname))
+    );
+    setActiveIndex(0);
+
+    if (groupData.length === 1 || groupData.length == 0) {
+      setOutput("");
+      setgroupData("");
+      setText2("");
+      localStorage.clear();
+    }
+  }
+
+  function divHanler(index, groupname) {
+    setActiveIndex(index);
+    setgroupName(groupname);
+  }
 
   return (
     <div className="Container">
@@ -129,7 +193,7 @@ const Note_taking_page = () => {
                       {color.map((data) => (
                         <img
                           name={data.id}
-                          onClick={chooseColorHandler}
+                          onClick={(e) => setSelectedColor(e.target.name)}
                           src={data.image}
                         ></img>
                       ))}
@@ -155,24 +219,43 @@ const Note_taking_page = () => {
               if (name.length >= 1) {
                 return (
                   <div
-                    onClick={(event) => viewNotesHandler(event, index)}
                     style={{
                       backgroundColor: activeIndex === index ? "#F7ECDC" : "",
                     }}
                   >
                     <div
-                      className="profileName"
-                      style={{
-                        backgroundColor: value.selectedColor
-                          ? value.selectedColor
-                          : "",
-                      }}
+                      className="grpNotesDivHandler"
+                      onClick={() => divHanler(index, value.inputValue)}
                     >
-                      <p>
-                        {name.length > 1 ? name[0][0] + name[1][0] : name[0][0]}
-                      </p>
+                      <div
+                        className="profileName"
+                        style={{
+                          backgroundColor: value.selectedColor
+                            ? value.selectedColor
+                            : "",
+                        }}
+                      >
+                        <p>
+                          {name.length > 1
+                            ? name[0][0] + name[1][0]
+                            : name[0][0]}
+                        </p>
+                      </div>
+
+                      <p>{value.inputValue}</p>
                     </div>
-                    <p>{value.inputValue}</p>
+                    <div className="correctionDiv">
+                      {activeIndex == index ? (
+                        <p
+                          className="dlt"
+                          onClick={() => deleteGroup(index, value.inputValue)}
+                        >
+                          Delete
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
                 );
               }
@@ -206,9 +289,9 @@ const Note_taking_page = () => {
             }
           })}
           {output ? (
-            <div className="lol">
+            <div className="UserTextDivMainContainer">
               <div className="UserTextDivContainer">
-                {output.map((item) => {
+                {output.map((item, index) => {
                   if (activeIndex === item.indexx) {
                     return (
                       <div>
@@ -216,10 +299,15 @@ const Note_taking_page = () => {
                           <div className="timeAndDate">
                             <p>{item.date}</p>
                           </div>
-                          <div>
+                          <div className="UserTextInnerDiv">
                             <p className="UserTex">{item.text2}</p>
+                            <div className="UserTextInnerDiv">
+                              <p onClick={() => notesEdit(index)}>Edit</p>
+                              <p onClick={() => notesDelete(index)}>Delete</p>
+                            </div>
                           </div>
                         </div>
+                        <div></div>
                       </div>
                     );
                   }
@@ -227,7 +315,7 @@ const Note_taking_page = () => {
               </div>
             </div>
           ) : (
-            <div className="lol">
+            <div className="UserTextDivMainContainer">
               <div className="UserTextDivContainer">
                 <div>
                   <div className="UserTextDiv">
@@ -243,7 +331,7 @@ const Note_taking_page = () => {
               <textarea
                 value={text2}
                 onChange={(e) => setText2(e.target.value)}
-                placeholder="Enter Your Text Here...."
+                placeholder="Enter Your Text Here....."
               >
                 {}
               </textarea>

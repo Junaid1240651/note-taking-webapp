@@ -81,6 +81,7 @@ font-size: 27.314px;
 font-style: normal;
 font-weight: 400;
 font-size: 20px;
+cursor: pointer;
 color: white;
 background-color: black;
 border-radius: 11px;
@@ -109,6 +110,7 @@ margin-top: 20px;
 .NotesDiv>button{
     width: 70%;
     background-color: black;
+    cursor: pointer;
     color: white;
     font-family: 'Roboto';
     font-style: normal;
@@ -133,9 +135,9 @@ margin-top: 20px;
 .grpNotes>div
 {
     display: flex;
-    width: 80%;
+    width: 88%;
     /* background: #F7ECDC; */
-
+    justify-content: space-evenly;
     margin-top: 20px;
     padding: 10px 0px 10px 20px;
     overflow-wrap: break-word;
@@ -144,13 +146,13 @@ margin-top: 20px;
     border-bottom-left-radius: 20px;
 }
 
-.grpNotes>div>p
+.grpNotes>div>div>p
 {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
     font-size: 20.6702px;
-    margin-left: 30px;
+    margin-left: 20px;
 }
 .profileName>p
 {
@@ -158,17 +160,36 @@ margin-top: 20px;
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
-    font-size: 24.1152px;
+    font-size: 24px;
     padding: 20px;
     margin: 0px;
-
-    
+}
+.grpNotesDivHandler{
+    display: flex;
+    width: 90%;
+}
+.correctionDiv{
+    display: flex;
+    align-items: center;
+    width: 38%;
 
 }
+.correctionDiv>p:nth-child(1){
+    font-size: 18px;
+    margin: 0px;
+    color: red;
+    margin-right: 10px;
+}
+
 .profileName{
-    width:24%;
+    display: flex;
+    flex-direction: row;
+    width:30%;
+    height: 100%;
     background-color: black;
     border-radius: 120%;
+
+    justify-content: center;
 
 }
 .RightDiv
@@ -203,7 +224,7 @@ font-size: 20.6702px;
 margin-left: 30px;
 
 }
-.lol{
+.UserTextDivMainContainer{
     display: flex;
     overflow: scroll;
     background: #F7ECDC;
@@ -224,7 +245,20 @@ margin-left: 30px;
     
     /* height: 100%; */
 }
-.UserTextDiv>p{
+.UserTextInnerDiv{
+    display: flex;
+    flex-direction: column;
+}
+.UserTextInnerDiv>div{
+    display: flex;
+    flex-direction: row;
+}
+.UserTextInnerDiv>div>p{
+    margin-left: 30px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    font-size: 18px;
 }
 
 
@@ -250,7 +284,7 @@ margin-left: 30px;
     font-size: 20px;
     overflow-wrap: break-word;
 
-    padding: 30px 30px 30px 30px;
+    padding: 30px 30px 0px 30px;
     margin: 0px;
 
 
