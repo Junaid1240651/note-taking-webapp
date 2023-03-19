@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/note-taking-webApp-live.git/static/css/main.37c43eef.css",
+    "main.js": "/note-taking-webApp-live.git/static/js/main.b6bced78.js",
+    "static/js/787.f783efef.chunk.js": "/note-taking-webApp-live.git/static/js/787.f783efef.chunk.js",
+    "index.html": "/note-taking-webApp-live.git/index.html",
+    "main.37c43eef.css.map": "/note-taking-webApp-live.git/static/css/main.37c43eef.css.map",
+    "main.b6bced78.js.map": "/note-taking-webApp-live.git/static/js/main.b6bced78.js.map",
+    "787.f783efef.chunk.js.map": "/note-taking-webApp-live.git/static/js/787.f783efef.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.37c43eef.css",
+    "static/js/main.b6bced78.js"
+  ]
+}
